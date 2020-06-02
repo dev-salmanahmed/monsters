@@ -25,6 +25,7 @@ class App extends Component {
     );
     return (
           <div className="App">
+            <h1 className='heading'>Monsters RoloDex</h1>
             <SearchBox placeholder='Search Monster' handleChange={e => this.setState({ searchFieldValue: e.target.value })} />
             <CardList monsters={filteredMonsters} />   
           </div>
