@@ -2,22 +2,23 @@ import React, { Component } from 'react';
 import './App.scss';
 import { CardList } from './components/card-list/card-list.component';
 import { SearchBox } from './components/search-box/SearchBox.component';
+import {monsters } from './utils/json/monsters';
 
 class App extends Component {
 
   constructor(){
     super();
     this.state = {
-      monsters: [],
+      monsters: monsters,
       searchFieldValue: ''
     }
   }
 
   componentDidMount(){
-    fetch('https://jsonplaceholder.typicode.com/users', {
-      mode: 'no-cors' // 'cors' by default
-    }).then(response => response.json())
-    .then(users => this.setState({ monsters: users }));
+    // fetch('https://jsonplaceholder.typicode.com/users', {
+    //   mode: 'no-cors' // 'cors' by default
+    // }).then(response => response.json())
+    // .then(users => this.setState({ monsters: users }));
   }
 
   render () {
