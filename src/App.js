@@ -9,27 +9,55 @@ class App extends Component {
   constructor(){
     super();
     this.state = {
-      monsters: monsters,
-      searchFieldValue: ''
+      monsters: [],
+      searchFieldValue: '',
+      apiLoader: false,
+      since: 30,
     }
   }
 
-  componentDidMount(){
-    // fetch('https://jsonplaceholder.typicode.com/users', {
-    //   mode: 'no-cors' // 'cors' by default
-    // }).then(response => response.json())
-    // .then(users => this.setState({ monsters: users }));
+  componentDidMount() {
+    this.getProfiles();
   }
+
+  getProfiles = (loadmore = 0) => {
+    this.setState({apiLoader: true, since: this.state.since + loadmore});
+    fetch(`https://api.github.com/users?since=${this.state.since + loadmore}`)
+    .then(response => response.json())
+    .then(results => {
+      this.setState({monsters: this.state.monsters.concat(results), apiLoader: false }) 
+    }).catch(error => {
+      console.log(error);
+      this.setState({apiLoader: false });
+    });
+  }
+
+  loadMore(){
+    this.getProfiles(20);
+  }
+
+  searchProfile = () => {}
 
   render () {
     const { monsters, searchFieldValue } = this.state;
-    const filteredMonsters = monsters.filter(monster => monster.name.toLowerCase().includes(searchFieldValue.toLowerCase())
+    const filteredMonsters = monsters.filter(monster => monster.login.toLowerCase().includes(searchFieldValue.toLowerCase())
     );
     return (
           <div className="App">
             <h1 className='heading'>Monsters RoloDex</h1>
-            <SearchBox placeholder='Search Monster' handleChange={e => this.setState({ searchFieldValue: e.target.value })} />
-            <CardList monsters={filteredMonsters} />   
+            { this.state.apiLoader ? 
+              <div>Loading profiles</div>
+            :
+            <div> 
+              <SearchBox placeholder='Search Monster' handleChange={e => this.setState({ searchFieldValue: e.target.value })} />
+              <CardList monsters={filteredMonsters} />
+              <div>
+                <button onClick={() => this.loadMore()}> 
+                   Load More
+                </button>
+                </div>
+            </div>
+            }   
           </div>
     );
   }
